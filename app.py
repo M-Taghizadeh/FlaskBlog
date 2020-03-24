@@ -8,7 +8,8 @@ app.config.from_object(Development)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
+# import view
+from views import index
 # import blueprints
 from mod_admin import admin
 from mod_users import users
