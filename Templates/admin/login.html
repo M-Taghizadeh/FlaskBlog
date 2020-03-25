@@ -1,19 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Admin Login</h1>
-    <form action="{{ url_for('admin.login') }}" method="POST">
-        <!-- csrf token -->
-        {{ form.hidden_tag() }}
-        Email : {{ form.email }} <br>
-        Password : {{ form.password }} <br>
-        <input type="submit" value="Login">
+{% extends 'base.html' %}
 
-    </form>
-</body>
-</html>
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+
+<h1>Admin Login</h1>
+<form action="{{ url_for('admin.login') }}" method="POST">
+    
+    <!-- flash messages -->
+    {% with messages = get_flashed_messages(True) %}
+    <!-- if True u can use category [0]:category [1]:flash message --> 
+        {% if messages %}
+            <div class="row">
+            {% for message in messages %}
+                <div class="card {{ message[0] }}">
+                    <div class="section">
+                        <p>{{message[1]}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {{ form.hidden_tag() }}
+    Email : {{ form.email }}<br>
+    Password : {{ form.password }}<br>
+    <input type="submit" value="Login">
+
+</form>
+
+{% endblock %}
