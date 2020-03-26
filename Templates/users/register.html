@@ -14,7 +14,9 @@
             <div class="row">
             {% for message in messages %}
                 <div class="card {{ message[0] }}">
-                    <p><mark class="{{ message[0] }}">{{message[1]}}</mark></p>
+                    <div class="section">
+                        <p>{{message[1]}}</p>
+                    </div>
                 </div>
             {% endfor %}
             </div>
