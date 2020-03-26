@@ -4,6 +4,10 @@ from app import db
 from werkzeug.security import generate_password_hash ### for create password hash
 from werkzeug.security import check_password_hash ### for check hash
 
+
+# Role = 0 --> User
+# Role = 1 --> Admin
+
 class User(db.Model):
     __tablename__ = "users"
     id = Column(Integer, primary_key = True)
@@ -17,3 +21,6 @@ class User(db.Model):
 
     def check_pass(self, password):
         return check_password_hash(self.password, password) ### return a boolean 
+    
+    def is_admin(self):
+        return self.role == 1

@@ -2,13 +2,20 @@ from . import admin ### . means __init__.py
 from flask import session, render_template, request, abort, flash ### abort for errors
 from mod_users.froms import LoginForm
 from mod_users.models import User
+from .utils import admin_only_view ### my decorator
 
 # important ... 
 # session is a dict -----> for using session you should set a 'secret key' for your web app
 # client side : Cookie,    server side : Session
 
 @admin.route("/")
+@admin_only_view
 def index():
+    # Method 1 :
+    # if session.get("user_id") is None:
+    #     abort(401) ### Unauthorized
+    # Method 2 : Decorator utils
+
     return "Hello from admin index.."
 
 
@@ -35,14 +42,19 @@ def login():
             flash("Incorrect Password", category="error")
             print(session)
             return render_template("admin/login.html", form=form)
+        if not user.is_admin():
+            flash("Incorrect Credentials!!!", category="error")
+            print(session)
+            return render_template("admin/login.html", form=form)
 
         session['email'] = user.email
         session['user_id'] = user.id
+        session['role'] = user.role
 
         print(session)
         return "Loged in Successfuly"
         
-    if session.get('email') is not None:
+    if session.get('role') is not None:
         return "you are already Loged in.."
 
     return render_template("admin/login.html", form=form)
