@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <ul>
+        <li><a href="{{ url_for('admin.index') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('admin.create_post') }}">Add New Posts</a></li>
+        <li><a href="{{ url_for('admin.logout') }}">Logout</a></li>
+    </ul>
+</div>
+
+<div>
+    <!-- flash messages -->
+{% with messages = get_flashed_messages(True) %}
+<!-- if True u can use category [0]:category [1]:flash message --> 
+    {% if messages %}
+        <div class="row">
+        {% for message in messages %}
+            <div class="card {{ message[0] }}">
+                <div class="section">
+                    <p>{{message[1]}}</p>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+</div>
+
+{% block page_content %}
+
+{% endblock %}
+
+{% endblock %}
