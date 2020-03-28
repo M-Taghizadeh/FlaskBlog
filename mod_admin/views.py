@@ -1,10 +1,10 @@
 from . import admin ### . means __init__.py
 from flask import session, render_template, request, abort, flash ### abort for errors
-from mod_users.froms import LoginForm
+from mod_users.froms import LoginForm, RegisterForm
 from mod_users.models import User
 from .utils import admin_only_view ### my decorator
 from flask import redirect, url_for
-from mod_blog.forms import CreatePostForm
+from mod_blog.forms import CreatePostForm, ModifyPostForm
 from mod_blog.models import Post
 from app import db
 from sqlalchemy.exc import IntegrityError
@@ -96,6 +96,87 @@ def create_post():
             return redirect(url_for("admin.index"))
         except IntegrityError:
             db.session.rollback()
+            flash("Slug Duplicated.")
             print(IntegrityError)
 
     return render_template("admin/create_post.html", form=form)
+
+@admin.route("/users/", methods=["GET"])
+@admin_only_view
+def list_users():
+    users = User.query.order_by(User.id.desc()).all() ### select * from users
+    return render_template("admin/list_users.html", users = users)
+
+@admin.route("users/new", methods=["GET"])
+@admin_only_view
+def get_create_user():
+    form = RegisterForm() # we not use fill RegisterForm because methods=["GET"]
+    return render_template("admin/create_user.html", form=form)
+
+@admin.route("users/new", methods=["POST"])
+@admin_only_view
+def post_create_user():
+    form = RegisterForm(request.form) # we not use fill RegisterForm because methods=["GET"]
+    
+    if not form.validate_on_submit():
+        return render_template("admin/create_user.html", form = form)
+        
+    if not form.password.data == form.confirm_password.data:
+        error_msg = "Password and Confirm Password dose not match!!!"
+        form.password.errors.append(error_msg)
+        form.confirm_password.errors.append(error_msg)
+        return render_template("admin/create_user.html", form = form)
+
+    ### Method 1 for handeling user duplicated:
+    old_user = User.query.filter(User.email.ilike(form.email.data)).first()
+    if old_user:
+        flash("Email in use.", category="error")
+        return render_template("admin/create_user.html", form = form)
+
+    
+    new_user = User()
+    new_user.full_name = form.full_name.data
+    new_user.email = form.email.data
+    new_user.set_pass(form.password.data)
+    db.session.add(new_user)
+    db.session.commit()
+    flash("Your Welcome dear " + form.full_name.data, category="tertiary")
+        
+    return render_template("admin/create_user.html", form=form)
+
+@admin.route("/posts/", methods=["GET"])
+@admin_only_view
+def list_posts():
+    posts = Post().query.order_by(Post.id.desc()).all()
+    return render_template("admin/list_posts.html", posts=posts)
+
+@admin.route("/posts/delete/<int:post_id>", methods=["GET"])
+@admin_only_view
+def delete_post(post_id):
+    post = Post().query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    flash("Post Deleted!!!")
+    return redirect(url_for("admin.list_posts"))
+
+### this form fill with old value of post form from post method from database
+@admin.route("posts/modify/<int:post_id>", methods=["GET", "POST"])
+@admin_only_view
+def modify_post(post_id):
+    post = Post().query.get_or_404(post_id)
+    form  = ModifyPostForm(obj=post)
+
+    if request.method == "POST":
+        if not form.validate_on_submit():
+            return render_template("admin/modify_post.html", form=form, post=post)
+        post.title = form.title.data
+        post.summary = form.summary.data
+        post.content = form.content.data
+        post.slug = form.slug.data
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            flash("Slug Duplicated.")
+        
+    return render_template("admin/modify_post.html", form=form, post=post)

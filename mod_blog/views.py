@@ -1,5 +1,5 @@
 from . import blog
-from flask import render_template
+from flask import render_template, abort
 from .models import Post
 from app import db
 
@@ -12,6 +12,9 @@ def index():
 
 @blog.route("/<string:slug>")
 def single_post(slug):
-    post = Post.query.filter(Post.slug == slug).first()
+    post = Post.query.filter(Post.slug == slug).first_or_404()
+    # if not post:
+    #     abort(404)
 
-    return post.title
+    # in top we have 2 method for handel if page not found : 1:first_or_404() or 2:abort(404)
+    return render_template("blog/single_post.html", post=post)
