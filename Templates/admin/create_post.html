@@ -6,11 +6,11 @@
 <h1>Create a new post</h1>
 <form action=" {{ url_for('admin.create_post') }}", method="POST">
 {{ form.hidden_tag() }}<br>
-
-Slug {{ form.slug }}<br>
-Title : {{ form.title }}<br>
-Summary : {{ form.summary }}<br>
-Content : {{ form.content }}<br>
+    Slug {{ form.slug }}<br>
+    Title : {{ form.title }}<br>
+    Summary : {{ form.summary }}<br>
+    Content : {{ form.content }}<br>
+    Categories : {{ form.categories}}
 <input type="submit" value="Create post">
 </form>
 {% endblock %}
