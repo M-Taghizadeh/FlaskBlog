@@ -8,6 +8,10 @@ from mod_blog.forms import PostForm, CategoryForm
 from mod_blog.models import Post, Category
 from app import db
 from sqlalchemy.exc import IntegrityError
+from mod_uploads.forms import FileUploadForm
+from mod_uploads.models import File
+from werkzeug.utils import secure_filename
+import uuid # return a hash
 
 # important ... 
 # session is a dict -----> for using session you should set a 'secret key' for your web app
@@ -269,3 +273,31 @@ def modify_category(category_id):
             flash("Slug Duplicated.")
         
     return render_template("admin/modify_category.html", form=form, category=category)
+
+
+
+### UPLOAD:
+@admin.route("/library/upload", methods=["GET", "POST"])
+@admin_only_view
+def upload_file():
+    form = FileUploadForm() ### default --> fill with : form.data
+
+    if request.method == "POST":
+        # print(request.form)
+        # print(request.files)
+        # print(form.data) ### contain request.form and request.files
+        if not form.validate_on_submit:
+            return "Not Valid!"
+        
+        # save file in static/uploads
+        print(dir(form.file.data)) ### dir for showing all attr of an object thats very important
+
+        # create a random hash name
+        filename = f'{uuid.uuid1()}_{secure_filename(form.file.data.filename)}' # secure_filename ---> exp file name : ../filename (bug in unix base os)
+        new_file = File()
+        new_file.filename = filename
+        db.session.add(new_file)
+        db.session.commit()
+        form.file.data.save(f'static/uploads/{filename}')
+        flash(f'File Uploaded on { url_for("static", filename="uploads/"+filename, _external=True) }')
+    return render_template("admin/upload_file.html", form=form)
