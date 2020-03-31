@@ -2,11 +2,15 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from Config import Development
+from redis import Redis
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config.from_object(Development)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+redis = Redis.from_url(app.config['REDIS_SERVER_URL'])
+mail = Mail(app)
 
 # import view
 from views import index
