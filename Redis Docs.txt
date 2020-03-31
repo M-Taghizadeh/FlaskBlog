@@ -1,0 +1,49 @@
+Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes with radius queries and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster.
+
+You can run atomic operations on these types, like appending to a string; incrementing the value in a hash; pushing an element to a list; computing set intersection, union and difference; or getting the member with highest ranking in a sorted set.
+
+In order to achieve its outstanding performance, Redis works with an in-memory dataset. Depending on your use case, you can persist it either by dumping the dataset to disk every once in a while, or by appending each command to a log. Persistence can be optionally disabled, if you just need a feature-rich, networked, in-memory cache.
+
+Redis also supports trivial-to-setup master-slave asynchronous replication, with very fast non-blocking first synchronization, auto-reconnection with partial resynchronization on net split.
+
+----------------------------------
+Redis => [Key Value DataBse] your data have a key for example => 6_register : 12345 [6 is user id mode is register and token is 12345]
+- download redis :
+https://github.com/antirez/redis/issues/6276
+
+- Connection Testin:
+1:in cmd(admin) 
+>>> redis-cli 
+>>> ping 
+>>> pong
+2:in services
+
+- install redis in python or venv
+>>> pip install redis
+
+- add redis key in flask config (.env)
+>> REDIS_SERVER_URL=redis://127.0.0.1:6379
+
+- import redis in app.py:
+>> from redis import Redis
+>> redis = Redis.from_url(app.config['REDIS_SERVER_URL'])
+
+- test in flask sell:
+>>> from app import redis 
+>>> redis.ping()
+True # if connection is ok.
+
+- redis add:
+>> redis.set(name, token, 14400)
+
+- redis get value by key:
+>> redis.get(name=name)
+>>> GET 6_register # (in redis-cli)
+
+- redis delete:
+>> redis.delete(name)
+
+
+
+
+
