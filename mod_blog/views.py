@@ -11,8 +11,15 @@ def index():
     # Search Form
     search_form = SearchForm()
 
-    # List of Posts
-    posts = Post.query.all()
+    # in the past we use all() methos for showing post :(
+    # but we can paginate post , see it bellow :)
+    # List of Posts 
+    # posts = Post.query.all()
+
+    # pagination
+    page = request.args.get("p", default=1, type=int) 
+    posts = Post.query.paginate(page, 5)
+
     return render_template("blog/index.html", posts=posts, search_form=search_form)
 
 @blog.route("/<string:slug>")

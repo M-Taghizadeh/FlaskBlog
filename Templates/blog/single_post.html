@@ -3,7 +3,11 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block page_content %}
-<h1>{{ post.title }}</h1>
-<p>{{ post.content }}</p>
 
+<div class="collapse">
+    <div style="border-radius: 5px; background-color: #f0f0f0" class="collapse">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.content }}</p>
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,39 @@
+Pagination just for pagination of your contents in flask sqlalchemy its wery simple :)))
+-----------------------------------------------------------------
+in flask shell:
+- As usual we use "all()" method in sqlalchemy for getting all Record(Object) of a Table(Class)
+>>> Post.query.all() 
+[<Post 1>, <Post 2>, <Post 3>, <Post 4>, <Post 5>, <Post 6>, <Post 7>, <Post 8>, <Post 9>, <Post 10>, <Post 11>]
+
+------------------------------------------------------------------
+- In flask_sqlalchemy we have "paginate()" method for getting paginatation object (record)
+  query.paginate(page_number, number_of_object_in_page, default_value_if_page_not_exist=False)
+>>> page1 = Post.query.paginate(1, 5)
+<flask_sqlalchemy.Pagination object at 0x0000016D7E050048>
+------------------------------------------------------------------
+- [Methods and Parameter for pagination objects]:
+- next() : get paginatation object of next page 
+>>> page2 = page1.next()
+>>> page2
+<flask_sqlalchemy.Pagination object at 0x0000016D7E1DE688>
+
+- next_num : get number of next page
+>>> page1.next_num
+2 
+
+- items : get list of all items for this page
+>>> page1.items
+[<Post 1>, <Post 2>, <Post 3>, <Post 4>, <Post 5>]]
+
+
+- total : get number of items from all page
+>>> page1.total
+11
+
+- pages : get number of pages
+>>> page1.pages
+3
+
+
+
+

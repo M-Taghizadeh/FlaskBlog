@@ -3,17 +3,23 @@
 {% block title %}Blog{% endblock %}
 
 {% block page_content %}
-<h1>Blog</h1>
-{% for post in posts %}
-<div>
-    <h2><a href="{{ url_for('blog.single_post', slug = post.slug) }}">{{ post.title }}</a></h2>
-    <p>{{ post.summary or post.content | truncate(64,true,'...')}}</p>
+<div class="collapse">
+    <h1>Flask Blog</h1>
+    {% for post in posts.items %} <!-- if dont use items => TypeError: 'Pagination' object is not iterable -->
+    <div style="border-radius: 5px; background-color: #f0f0f0" class="collapse">
+        <h2><a href="{{ url_for('blog.single_post', slug = post.slug) }}">{{ post.title }}</a></h2>
+        <p>{{ post.summary or post.content | truncate(64,true,'...')}}</p>
+    </div>
+    {% endfor%}
 </div>
 
-{% endfor%}
-
-
-
+<!-- pagination -->
+<br><br><br>
+<div style="text-align: center;">
+    {% for page in range(1, posts.pages+1) %}
+    <a href="{{ url_for('blog.index', p=page) }}"><button class="primary">{{page}}</button></a></span>
+    {% endfor %}
+</div>
 
 
 {% endblock %}

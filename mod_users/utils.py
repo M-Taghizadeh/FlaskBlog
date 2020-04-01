@@ -1,6 +1,7 @@
 import random
 from app import redis
 from app import mail
+from flask import url_for # for create full url for activate registeration.
 
 # Redis => [Key Value DataBse] your data have a key for example => 6_register : 12345 [6 is user id mode is register and token is 12345]
 def add_to_redis(user, mode):
@@ -13,10 +14,12 @@ def add_to_redis(user, mode):
     return token
 
 def send_signup_email(user, token):
+    url = url_for("users.confirm_registeration", email = user.email, token = token, _external=True)
+
     sender ='taghizadeh.py@gmail.com'
     recipients = [user.email] 
     subject = "Flask Blog Registeration Confirm"
-    body = f'Hello dear {user.full_name}<br>Here is your token : {token}<br><br>this token expire in 4 houre.'
+    body = f'Hello dear {user.full_name}<br>Here is your token : {url}<br><br>this token expire in 4 houre.'
     mail.send_message(sender=sender, recipients=recipients, subject=subject, html=body)
 
 def get_from_redis(user, mode):

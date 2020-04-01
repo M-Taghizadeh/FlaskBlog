@@ -1,0 +1,12 @@
+you can set this server name in Config in your app
+>> SERVER_NAME = 127.0.0.1:5000
+--------------------------------------
+>> url_for("admin.blog", _external=True)
+127.0.0.1:5000/admin/blog/
+
+>> url_for("admin.blog", _external=False)
+127.0.0.1:5000/admin/blog/
+
+query string in url_for:
+>> url_for("users.confirm_registeration", email = user.email, token = token, _external=True)
+http://127.0.0.1:5000/users/confirm/?email=mohammad.taghizadeh1998%40gmail.com&token=27876
